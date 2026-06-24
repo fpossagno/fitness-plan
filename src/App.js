@@ -15,27 +15,27 @@ const COLORS = {
 };
 
 const GYM = [
-  { name: "Goblet Squat / Leg Press", sets: "3 × 12", muscle: "Quads + Glutes", tip: "Keep chest up, drive through heels", img: "https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?w=700&q=80", emoji: "🦵" },
-  { name: "Romanian Deadlift", sets: "3 × 10", muscle: "Hamstrings + Lower Back", tip: "Hinge at hips, bar close to legs, slight knee bend", img: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=700&q=80", emoji: "🏋️" },
-  { name: "Chest Press", sets: "3 × 12", muscle: "Chest + Triceps", tip: "Full range, controlled descent, elbows at 45°", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=700&q=80", emoji: "💪" },
-  { name: "Cable / Seated Row", sets: "3 × 12", muscle: "Back + Biceps", tip: "Pull elbows back, squeeze shoulder blades at peak", img: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=700&q=80", emoji: "🔙" },
-  { name: "Shoulder Press", sets: "3 × 10", muscle: "Shoulders", tip: "Don't fully lock out at top, steady controlled tempo", img: "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=700&q=80", emoji: "🙆" },
-  { name: "Lat Pulldown", sets: "3 × 12", muscle: "Lats + Upper Back", tip: "Pull bar to upper chest, lean back slightly", img: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=700&q=80", emoji: "⬇️" },
-  { name: "Plank", sets: "3 × 40 sec", muscle: "Core + Stability", tip: "Hips level, breathe steadily, don't hold breath", img: "https://images.unsplash.com/photo-1599058917765-a780eda07a3e?w=700&q=80", emoji: "⬜" },
+  { name: "Goblet Squat / Leg Press", sets: "3 × 12", muscle: "Quads + Glutes", tip: "Keep chest up, drive through heels", img: "https://www.inspireusafoundation.org/wp-content/uploads/2022/08/goblet-squat-variations.jpg", emoji: "🦵" },
+  { name: "Romanian Deadlift", sets: "3 × 10", muscle: "Hamstrings + Lower Back", tip: "Hinge at hips, bar close to legs, slight knee bend", img: "https://www.inspireusafoundation.org/wp-content/uploads/2022/03/barbell-romanian-deadlift.gif", emoji: "🏋️" },
+  { name: "Chest Press", sets: "3 × 12", muscle: "Chest + Triceps", tip: "Full range, controlled descent, elbows at 45°", img: "https://www.inspireusafoundation.org/wp-content/uploads/2022/01/dumbbell-chest-press.gif", emoji: "💪" },
+  { name: "Cable / Seated Row", sets: "3 × 12", muscle: "Back + Biceps", tip: "Pull elbows back, squeeze shoulder blades at peak", img: "https://weighttraining.guide/wp-content/uploads/2016/10/Seated-Cable-Rows.png", emoji: "🔙" },
+  { name: "Shoulder Press", sets: "3 × 10", muscle: "Shoulders", tip: "Don't fully lock out at top, steady controlled tempo", img: "https://www.inspireusafoundation.org/wp-content/uploads/2021/09/dumbbell-shoulder-press.gif", emoji: "🙆" },
+  { name: "Lat Pulldown", sets: "3 × 12", muscle: "Lats + Upper Back", tip: "Pull bar to upper chest, lean back slightly", img: "https://www.inspireusafoundation.org/wp-content/uploads/2022/01/lat-pulldown.gif", emoji: "⬇️" },
+  { name: "Plank", sets: "3 × 40 sec", muscle: "Core + Stability", tip: "Hips level, breathe steadily, don't hold breath", img: "https://www.inspireusafoundation.org/wp-content/uploads/2021/11/plank.gif", emoji: "⬜" },
   { name: "Incline Treadmill Walk", sets: "10 min", muscle: "Cardio + Fat Burn", tip: "Incline 8–12%, 5–6 km/h, don't hold the rails", img: "https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=700&q=80", emoji: "🚶" },
 ];
 
 const HOME = [
-  { name: "Jumping Jacks", dur: 40, muscle: "Full body warm-up", tip: "Controlled rhythm, land softly on balls of feet", img: "https://images.unsplash.com/photo-1601422407692-ec4eeec1d9b3?w=700&q=80", emoji: "⭐" },
-  { name: "Bodyweight Squats", dur: 40, muscle: "Quads + Glutes", tip: "Feet shoulder-width, chest up, sit back into it", img: "https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?w=700&q=80", emoji: "🦵" },
-  { name: "Same-Side Knee to Elbow", dur: 40, muscle: "Obliques + Balance", tip: "Standing — lift right knee while right elbow comes down. Slow and controlled.", img: "https://images.unsplash.com/photo-1616803689943-5601631c7fec?w=700&q=80", emoji: "🔄" },
-  { name: "Opposite Knee Raises", dur: 40, muscle: "Core + Hip Flexors", tip: "Lift left knee while twisting right elbow toward it. Standing crunch.", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=700&q=80", emoji: "🔃" },
-  { name: "Push-Ups", dur: 40, muscle: "Chest + Triceps", tip: "On knees if needed. Full chest to floor, arms at 45°", img: "https://images.unsplash.com/photo-1598971457999-ca4ef48a9a71?w=700&q=80", emoji: "💪" },
-  { name: "Reverse Lunges", dur: 40, muscle: "Glutes + Quads", tip: "Step back, not forward. Keep front knee over ankle.", img: "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=700&q=80", emoji: "🦶" },
-  { name: "High Knees", dur: 40, muscle: "Cardio + Core", tip: "Drive knees to hip height, pump arms, stay on toes", img: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=700&q=80", emoji: "🏃" },
-  { name: "Glute Bridges", dur: 40, muscle: "Glutes + Lower Back", tip: "Lie on floor, feet flat. Drive hips up and squeeze at top.", img: "https://images.unsplash.com/photo-1604480132736-44c188fe4d20?w=700&q=80", emoji: "🌉" },
-  { name: "Mountain Climbers", dur: 40, muscle: "Core + Cardio", tip: "Plank position — drive knees alternately to chest. Keep hips level.", img: "https://images.unsplash.com/photo-1571019613576-2b22c76fd955?w=700&q=80", emoji: "🏔️" },
-  { name: "Deep Breath Stretch", dur: 20, muscle: "Recovery", tip: "Hands overhead, inhale deeply for 4 counts, exhale for 4", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=700&q=80", emoji: "🧘" },
+  { name: "Jumping Jacks", dur: 40, muscle: "Full body warm-up", tip: "Controlled rhythm, land softly on balls of feet", img: "https://www.inspireusafoundation.org/wp-content/uploads/2021/11/jumping-jacks.gif", emoji: "⭐" },
+  { name: "Bodyweight Squats", dur: 40, muscle: "Quads + Glutes", tip: "Feet shoulder-width, chest up, sit back into it", img: "https://www.inspireusafoundation.org/wp-content/uploads/2021/11/bodyweight-squat.gif", emoji: "🦵" },
+  { name: "Same-Side Knee to Elbow", dur: 40, muscle: "Obliques + Balance", tip: "Standing — lift right knee while right elbow comes down. Slow and controlled.", img: "https://www.inspireusafoundation.org/wp-content/uploads/2022/10/standing-oblique-crunch.gif", emoji: "🔄" },
+  { name: "Opposite Knee Raises", dur: 40, muscle: "Core + Hip Flexors", tip: "Lift left knee while twisting right elbow toward it. Standing crunch.", img: "https://www.inspireusafoundation.org/wp-content/uploads/2022/05/standing-cross-body-crunch.gif", emoji: "🔃" },
+  { name: "Push-Ups", dur: 40, muscle: "Chest + Triceps", tip: "On knees if needed. Full chest to floor, arms at 45°", img: "https://www.inspireusafoundation.org/wp-content/uploads/2021/11/push-up.gif", emoji: "💪" },
+  { name: "Reverse Lunges", dur: 40, muscle: "Glutes + Quads", tip: "Step back, not forward. Keep front knee over ankle.", img: "https://www.inspireusafoundation.org/wp-content/uploads/2022/01/reverse-lunge.gif", emoji: "🦶" },
+  { name: "High Knees", dur: 40, muscle: "Cardio + Core", tip: "Drive knees to hip height, pump arms, stay on toes", img: "https://www.inspireusafoundation.org/wp-content/uploads/2022/01/high-knees.gif", emoji: "🏃" },
+  { name: "Glute Bridges", dur: 40, muscle: "Glutes + Lower Back", tip: "Lie on floor, feet flat. Drive hips up and squeeze at top.", img: "https://www.inspireusafoundation.org/wp-content/uploads/2021/11/glute-bridge.gif", emoji: "🌉" },
+  { name: "Mountain Climbers", dur: 40, muscle: "Core + Cardio", tip: "Plank position — drive knees alternately to chest. Keep hips level.", img: "https://www.inspireusafoundation.org/wp-content/uploads/2021/11/mountain-climbers.gif", emoji: "🏔️" },
+  { name: "Deep Breath Stretch", dur: 20, muscle: "Recovery", tip: "Hands overhead, inhale deeply for 4 counts, exhale for 4", img: "https://www.inspireusafoundation.org/wp-content/uploads/2022/09/overhead-reach-stretch.gif", emoji: "🧘" },
 ];
 
 const SCHEDULE = [
