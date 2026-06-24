@@ -1,17 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 
 const COLORS = {
-  black: "#0a0a0a",
-  charcoal: "#161616",
-  panel: "#1e1e1e",
-  border: "#2e2e2e",
-  lime: "#c8f135",
-  limeDim: "#8aaa22",
-  white: "#f0f0eb",
-  muted: "#777",
-  blue: "#4a9eff",
-  orange: "#f5a623",
-  red: "#e84040",
+  black: "#0a0a0a", charcoal: "#161616", panel: "#1e1e1e", border: "#2e2e2e",
+  lime: "#c8f135", limeDim: "#8aaa22", white: "#f0f0eb", muted: "#777",
+  blue: "#4a9eff", orange: "#f5a623", red: "#e84040",
 };
 
 const GYM = [
@@ -64,24 +56,74 @@ const ROUTINE = [
   { time: "Evening", action: "Magnesium glycinate before bed" },
 ];
 
-// ── Shared styles ──────────────────────────────────────────
+const MEALS = [
+  {
+    time: "7:00", label: "Breakfast", kcal: 450, protein: 35,
+    options: [
+      { name: "Scrambled eggs + rye bread + avocado", detail: "3 eggs scrambled · 2 slices rye bread · half avocado · black coffee" },
+      { name: "Greek yogurt bowl", detail: "200g Greek yogurt 0% · 40g oats · handful berries · 1 tbsp honey · optional whey scoop" },
+      { name: "Overnight oats + boiled eggs", detail: "80g oats · 200ml milk · 2 boiled eggs · piece of fruit" },
+    ]
+  },
+  {
+    time: "12:30", label: "Lunch", kcal: 600, protein: 45,
+    options: [
+      { name: "Chicken rice bowl", detail: "150g grilled chicken breast · 120g cooked rice · roasted vegetables · olive oil and lemon dressing" },
+      { name: "Salmon salad", detail: "150g baked salmon · large mixed salad · 80g quinoa · olive oil" },
+      { name: "Turkey wrap", detail: "2 wholegrain wraps · 130g sliced turkey · hummus · lettuce · tomato · cucumber" },
+    ]
+  },
+  {
+    time: "15:30", label: "Snack (optional)", kcal: 200, protein: 20,
+    options: [
+      { name: "Protein shake + banana", detail: "1 scoop whey (25g protein) · 1 banana · water" },
+      { name: "Cottage cheese + fruit", detail: "200g cottage cheese · handful of grapes or berries" },
+      { name: "Rice cakes + peanut butter", detail: "3 rice cakes · 2 tbsp peanut butter · black coffee" },
+    ]
+  },
+  {
+    time: "19:00", label: "Dinner", kcal: 650, protein: 45,
+    options: [
+      { name: "Beef stir-fry + noodles", detail: "150g lean beef strips · 100g soba noodles · broccoli and peppers · soy and ginger sauce" },
+      { name: "Baked cod + sweet potato", detail: "180g cod fillet · 200g sweet potato mash · steamed greens · olive oil" },
+      { name: "Chicken pasta", detail: "130g chicken breast · 80g dry pasta · tomato sauce · parmesan · side salad" },
+    ]
+  },
+];
+
+const RULES = [
+  { icon: "🎯", label: "Daily calories", value: "1,900–2,000 kcal (500 kcal deficit from your maintenance)" },
+  { icon: "💪", label: "Protein target", value: "140–160g per day — hit this above everything else" },
+  { icon: "💧", label: "Water", value: "2.5–3L daily — more on gym days" },
+  { icon: "🚫", label: "Avoid", value: "Sugary drinks, alcohol on weekdays, ultra-processed snacks" },
+  { icon: "✅", label: "Prioritise", value: "Protein first at every meal, vegetables at lunch and dinner" },
+  { icon: "⏰", label: "Timing", value: "Eat within 1h of waking. Don't skip meals — it spikes cortisol" },
+];
+
+const GROCERY = [
+  { cat: "Protein", items: ["Chicken breast", "Salmon fillet", "Lean beef mince", "Cod / white fish", "Turkey slices", "Eggs (12-pack)", "Greek yogurt 0%", "Cottage cheese", "Whey protein"] },
+  { cat: "Carbs", items: ["Rye bread", "Oats", "Brown rice", "Sweet potato", "Wholegrain pasta", "Quinoa", "Rice cakes"] },
+  { cat: "Fats", items: ["Avocado", "Olive oil", "Peanut butter (no sugar)", "Mixed nuts"] },
+  { cat: "Veg & Fruit", items: ["Broccoli", "Spinach", "Mixed peppers", "Cucumber", "Tomatoes", "Berries (frozen ok)", "Banana", "Apples"] },
+  { cat: "Flavour", items: ["Garlic", "Lemon", "Soy sauce (low sodium)", "Ginger", "Cumin", "Paprika", "Hummus"] },
+];
+
 const S = {
   page: { background: COLORS.black, minHeight: "100vh", color: COLORS.white, fontFamily: "'Inter', -apple-system, sans-serif", fontSize: 14 },
-  header: { background: COLORS.charcoal, borderBottom: `2px solid ${COLORS.lime}`, padding: "28px 20px 20px", textAlign: "center" },
-  eyebrow: { fontFamily: "system-ui", fontSize: 10, letterSpacing: 4, textTransform: "uppercase", color: COLORS.lime, marginBottom: 8 },
+  header: { background: COLORS.charcoal, borderBottom: "2px solid " + COLORS.lime, padding: "28px 20px 20px", textAlign: "center" },
+  eyebrow: { fontSize: 10, letterSpacing: 4, textTransform: "uppercase", color: COLORS.lime, marginBottom: 8 },
   h1: { fontSize: "clamp(38px, 9vw, 64px)", fontWeight: 900, lineHeight: 1, textTransform: "uppercase", letterSpacing: -1, margin: 0 },
   subtitle: { marginTop: 8, color: COLORS.muted, fontSize: 13, fontWeight: 300 },
-  nav: { display: "flex", overflowX: "auto", background: COLORS.charcoal, borderBottom: `1px solid ${COLORS.border}`, position: "sticky", top: 0, zIndex: 100 },
-  navBtn: (active) => ({ flex: "0 0 auto", padding: "13px 18px", background: "none", border: "none", borderBottom: `3px solid ${active ? COLORS.lime : "transparent"}`, color: active ? COLORS.lime : COLORS.muted, fontFamily: "system-ui", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.2s" }),
+  nav: { display: "flex", overflowX: "auto", background: COLORS.charcoal, borderBottom: "1px solid " + COLORS.border, position: "sticky", top: 0, zIndex: 100 },
+  navBtn: (active) => ({ flex: "0 0 auto", padding: "13px 16px", background: "none", border: "none", borderBottom: "3px solid " + (active ? COLORS.lime : "transparent"), color: active ? COLORS.lime : COLORS.muted, fontFamily: "system-ui", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.2s" }),
   section: { padding: "20px 16px 60px", maxWidth: 680, margin: "0 auto" },
   secTitle: { fontSize: 28, fontWeight: 900, textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
   secDesc: { color: COLORS.muted, fontSize: 13, marginBottom: 20 },
-  card: { background: COLORS.panel, border: `1px solid ${COLORS.border}`, borderRadius: 10, overflow: "hidden", marginBottom: 14 },
-  panel: { background: COLORS.panel, border: `1px solid ${COLORS.border}`, borderRadius: 10, padding: 16 },
+  card: { background: COLORS.panel, border: "1px solid " + COLORS.border, borderRadius: 10, overflow: "hidden", marginBottom: 14 },
+  panel: { background: COLORS.panel, border: "1px solid " + COLORS.border, borderRadius: 10, padding: 16 },
   badge: (color) => ({ display: "inline-block", background: color + "22", color, fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 3, marginRight: 6 }),
 };
 
-// ── ExerciseCard ──────────────────────────────────────────
 function ExerciseCard({ ex, index, type }) {
   const [imgErr, setImgErr] = useState(false);
   return (
@@ -95,9 +137,7 @@ function ExerciseCard({ ex, index, type }) {
         </div>
       )}
       <div style={{ padding: "14px 16px" }}>
-        <div style={{ fontWeight: 900, fontSize: 18, textTransform: "uppercase", marginBottom: 6 }}>
-          {index + 1}. {ex.name}
-        </div>
+        <div style={{ fontWeight: 900, fontSize: 18, textTransform: "uppercase", marginBottom: 6 }}>{index + 1}. {ex.name}</div>
         <div style={{ marginBottom: 8 }}>
           <span style={S.badge(COLORS.lime)}>{type === "gym" ? ex.sets : ex.dur + " sec"}</span>
           <span style={S.badge(COLORS.blue)}>{ex.muscle}</span>
@@ -108,17 +148,16 @@ function ExerciseCard({ ex, index, type }) {
   );
 }
 
-// ── Timer ─────────────────────────────────────────────────
 function Timer() {
   const [idx, setIdx] = useState(0);
   const [round, setRound] = useState(1);
   const [timeLeft, setTimeLeft] = useState(40);
   const [running, setRunning] = useState(false);
-  const [phase, setPhase] = useState("idle"); // idle | go | rest | done
+  const [phase, setPhase] = useState("idle");
   const intervalRef = useRef(null);
   const stateRef = useRef({ idx: 0, round: 1, timeLeft: 40, phase: "idle" });
 
-  const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+  const fmt = (s) => String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
 
   const tick = () => {
     const st = stateRef.current;
@@ -132,19 +171,16 @@ function Timer() {
         const ni = st.idx + 1;
         if (ni >= HOME.length) {
           if (st.round === 1) {
-            const ns = { ...st, timeLeft: 60, phase: "rest" };
-            stateRef.current = ns;
+            stateRef.current = { ...st, timeLeft: 60, phase: "rest" };
             setTimeLeft(60); setPhase("rest");
           } else {
             clearInterval(intervalRef.current);
-            setRunning(false);
-            setPhase("done");
+            setRunning(false); setPhase("done");
             stateRef.current = { ...st, phase: "done" };
           }
         } else {
           const dur = HOME[ni].dur;
-          const ns = { ...st, idx: ni, timeLeft: dur, phase: "go" };
-          stateRef.current = ns;
+          stateRef.current = { ...st, idx: ni, timeLeft: dur, phase: "go" };
           setIdx(ni); setTimeLeft(dur); setPhase("go");
         }
       }
@@ -156,17 +192,13 @@ function Timer() {
 
   const toggle = () => {
     if (phase === "idle" || phase === "done") {
-      const dur = HOME[0].dur;
-      stateRef.current = { idx: 0, round: 1, timeLeft: dur, phase: "go" };
-      setIdx(0); setRound(1); setTimeLeft(dur); setPhase("go");
-      setRunning(true);
+      stateRef.current = { idx: 0, round: 1, timeLeft: HOME[0].dur, phase: "go" };
+      setIdx(0); setRound(1); setTimeLeft(HOME[0].dur); setPhase("go"); setRunning(true);
       intervalRef.current = setInterval(tick, 1000);
     } else if (running) {
-      clearInterval(intervalRef.current);
-      setRunning(false);
+      clearInterval(intervalRef.current); setRunning(false);
     } else {
-      intervalRef.current = setInterval(tick, 1000);
-      setRunning(true);
+      intervalRef.current = setInterval(tick, 1000); setRunning(true);
     }
   };
 
@@ -197,9 +229,9 @@ function Timer() {
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         {HOME.map((ex, i) => {
           const isCurrent = phase === "go" && i === idx;
-          const isDone = (phase === "go" && i < idx) || (phase === "rest") || (phase === "done");
+          const isDone = (phase === "go" && i < idx) || phase === "rest" || phase === "done";
           return (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: isCurrent ? "rgba(200,241,53,0.08)" : COLORS.panel, border: `1px solid ${isCurrent ? COLORS.lime : COLORS.border}`, borderRadius: 6, opacity: isDone ? 0.35 : 1, transition: "all 0.3s" }}>
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: isCurrent ? "rgba(200,241,53,0.08)" : COLORS.panel, border: "1px solid " + (isCurrent ? COLORS.lime : COLORS.border), borderRadius: 6, opacity: isDone ? 0.35 : 1, transition: "all 0.3s" }}>
               <span style={{ fontWeight: 700, fontSize: 15, color: isCurrent ? COLORS.lime : COLORS.muted, width: 24 }}>{i + 1}</span>
               <span style={{ flex: 1, fontWeight: 500, fontSize: 13 }}>{isDone ? "✓ " : ""}{ex.name}</span>
               <span style={{ color: COLORS.muted, fontSize: 12 }}>{ex.dur}s</span>
@@ -211,7 +243,93 @@ function Timer() {
   );
 }
 
-// ── Tracker ───────────────────────────────────────────────
+function NutritionTab() {
+  const [activeMeal, setActiveMeal] = useState(null);
+  const [mealOptions, setMealOptions] = useState({ 0: 0, 1: 0, 2: 0, 3: 0 });
+
+  return (
+    <div>
+      <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+        {[
+          { label: "Calories", value: "~1,900", unit: "kcal", color: COLORS.lime },
+          { label: "Protein", value: "~150g", unit: "/day", color: COLORS.blue },
+          { label: "Deficit", value: "~500", unit: "kcal", color: COLORS.orange },
+        ].map((s, i) => (
+          <div key={i} style={{ flex: 1, background: COLORS.panel, border: "1px solid " + COLORS.border, borderTop: "3px solid " + s.color, borderRadius: 8, padding: "12px 8px", textAlign: "center" }}>
+            <div style={{ fontSize: 20, fontWeight: 900, color: s.color }}>{s.value}<span style={{ fontSize: 10, color: COLORS.muted, fontWeight: 400 }}> {s.unit}</span></div>
+            <div style={{ fontSize: 10, color: COLORS.muted, marginTop: 2, letterSpacing: 1, textTransform: "uppercase" }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: COLORS.lime, marginBottom: 12 }}>📋 Daily Meal Plan</div>
+
+      {MEALS.map((meal, mi) => (
+        <div key={mi} style={{ background: COLORS.panel, border: "1px solid " + (activeMeal === mi ? COLORS.lime : COLORS.border), borderRadius: 10, marginBottom: 10, overflow: "hidden" }}>
+          <div onClick={() => setActiveMeal(activeMeal === mi ? null : mi)}
+            style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", cursor: "pointer" }}>
+            <div style={{ background: COLORS.charcoal, borderRadius: 6, padding: "4px 8px", minWidth: 44, textAlign: "center" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.lime }}>{meal.time}</div>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 900, fontSize: 15, textTransform: "uppercase" }}>{meal.label}</div>
+              <div style={{ fontSize: 12, color: COLORS.muted, marginTop: 2 }}>{meal.options[mealOptions[mi]].name}</div>
+            </div>
+            <div style={{ textAlign: "right", flexShrink: 0 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: COLORS.lime }}>{meal.kcal} kcal</div>
+              <div style={{ fontSize: 11, color: COLORS.blue }}>{meal.protein}g protein</div>
+            </div>
+            <div style={{ color: COLORS.muted, fontSize: 14, marginLeft: 4 }}>{activeMeal === mi ? "▲" : "▼"}</div>
+          </div>
+
+          {activeMeal === mi && (
+            <div style={{ borderTop: "1px solid " + COLORS.border, padding: "14px 16px" }}>
+              <div style={{ display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap" }}>
+                {meal.options.map((opt, oi) => (
+                  <button key={oi} onClick={() => setMealOptions(p => ({ ...p, [mi]: oi }))}
+                    style={{ padding: "5px 12px", borderRadius: 4, border: "1px solid " + (mealOptions[mi] === oi ? COLORS.lime : COLORS.border), background: mealOptions[mi] === oi ? "rgba(200,241,53,0.1)" : "transparent", color: mealOptions[mi] === oi ? COLORS.lime : COLORS.muted, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+                    Option {oi + 1}
+                  </button>
+                ))}
+              </div>
+              <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>{meal.options[mealOptions[mi]].name}</div>
+              <div style={{ color: "#aaa", fontSize: 13, lineHeight: 1.8 }}>
+                {meal.options[mealOptions[mi]].detail.split(" · ").map((item, i) => (
+                  <div key={i} style={{ display: "flex", gap: 8 }}>
+                    <span style={{ color: COLORS.lime }}>·</span>
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+
+      <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: COLORS.lime, margin: "24px 0 12px" }}>⚡ Key Rules</div>
+      {RULES.map((r, i) => (
+        <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "10px 0", borderBottom: "1px solid " + COLORS.border, fontSize: 13 }}>
+          <span style={{ fontSize: 16, flexShrink: 0 }}>{r.icon}</span>
+          <span style={{ color: COLORS.lime, fontWeight: 700, width: 110, flexShrink: 0 }}>{r.label}</span>
+          <span style={{ color: "#ccc" }}>{r.value}</span>
+        </div>
+      ))}
+
+      <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: COLORS.lime, margin: "24px 0 12px" }}>🛒 Weekly Grocery List</div>
+      {GROCERY.map((g, i) => (
+        <div key={i} style={{ marginBottom: 14 }}>
+          <div style={{ fontWeight: 700, fontSize: 11, color: COLORS.blue, letterSpacing: 1, textTransform: "uppercase", marginBottom: 6 }}>{g.cat}</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {g.items.map((item, j) => (
+              <span key={j} style={{ background: COLORS.panel, border: "1px solid " + COLORS.border, borderRadius: 4, padding: "4px 10px", fontSize: 12, color: "#ccc" }}>{item}</span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function Tracker() {
   const [entries, setEntries] = useState(() => {
     try { return JSON.parse(localStorage.getItem("fit_entries") || "[]"); } catch { return []; }
@@ -231,11 +349,11 @@ function Tracker() {
   };
 
   const fields = [
-    { key: "weight", label: "⚖️ Weight", unit: "kg", placeholder: "e.g. 82.5" },
+    { key: "weight", label: "⚖️ Weight", unit: "kg", placeholder: "e.g. 85" },
     { key: "waist", label: "📏 Waist", unit: "cm", placeholder: "e.g. 90" },
     { key: "energy", label: "⚡ Energy", unit: "/10", placeholder: "1–10" },
     { key: "sleep", label: "😴 Sleep", unit: "hrs", placeholder: "e.g. 7.5" },
-    { key: "stress", label: "🧠 Stress", unit: "/10", placeholder: "1=low, 10=high" },
+    { key: "stress", label: "🧠 Stress", unit: "/10", placeholder: "1=low 10=high" },
   ];
 
   return (
@@ -250,8 +368,8 @@ function Tracker() {
             <span style={{ color: COLORS.muted, fontSize: 13, width: 110, flexShrink: 0 }}>{f.label}</span>
             <input type="number" step="0.1" value={form[f.key]} placeholder={f.placeholder}
               onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
-              style={{ flex: 1, background: COLORS.charcoal, border: `1px solid ${COLORS.border}`, borderRadius: 6, padding: "8px 12px", color: COLORS.white, fontSize: 14, fontFamily: "inherit", outline: "none" }} />
-            <span style={{ color: COLORS.muted, fontSize: 12, width: 28 }}>{f.unit}</span>
+              style={{ flex: 1, background: COLORS.charcoal, border: "1px solid " + COLORS.border, borderRadius: 6, padding: "8px 12px", color: COLORS.white, fontSize: 14, fontFamily: "inherit", outline: "none" }} />
+            <span style={{ color: COLORS.muted, fontSize: 12, width: 32 }}>{f.unit}</span>
           </div>
         ))}
         <button onClick={save} style={{ width: "100%", padding: 13, background: COLORS.lime, color: COLORS.black, border: "none", borderRadius: 6, fontWeight: 900, fontSize: 15, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer", marginTop: 4 }}>
@@ -259,17 +377,16 @@ function Tracker() {
         </button>
         {saved && <div style={{ textAlign: "center", color: COLORS.lime, fontSize: 13, marginTop: 8 }}>✓ Saved!</div>}
       </div>
-
       <div style={{ marginTop: 24 }}>
         <div style={{ fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: COLORS.muted, marginBottom: 10 }}>📊 History</div>
         {entries.length === 0 ? (
           <div style={{ color: COLORS.muted, textAlign: "center", padding: 24, fontSize: 13 }}>No entries yet — log your first week above.</div>
         ) : entries.map((e, i) => (
-          <div key={i} style={{ display: "flex", gap: 8, alignItems: "center", padding: "10px 12px", background: COLORS.panel, border: `1px solid ${COLORS.border}`, borderRadius: 6, marginBottom: 6, fontSize: 13 }}>
+          <div key={i} style={{ display: "flex", gap: 8, alignItems: "center", padding: "10px 12px", background: COLORS.panel, border: "1px solid " + COLORS.border, borderRadius: 6, marginBottom: 6, fontSize: 13 }}>
             <span style={{ color: COLORS.muted, width: 80, flexShrink: 0 }}>{e.date}</span>
             <span style={{ fontWeight: 700, width: 60 }}>{e.weight ? e.weight + " kg" : "—"}</span>
             <span style={{ color: COLORS.blue, width: 56 }}>{e.waist ? e.waist + " cm" : "—"}</span>
-            <span style={{ color: COLORS.orange, fontSize: 12 }}>⚡{e.energy||"—"} 😴{e.sleep||"—"}h 🧠{e.stress||"—"}</span>
+            <span style={{ color: COLORS.orange, fontSize: 12 }}>⚡{e.energy || "—"} 😴{e.sleep || "—"}h 🧠{e.stress || "—"}</span>
           </div>
         ))}
       </div>
@@ -277,12 +394,12 @@ function Tracker() {
   );
 }
 
-// ── Main App ──────────────────────────────────────────────
 const TABS = [
   { id: "supplements", label: "💊 Supps" },
   { id: "gym", label: "🏋️ Gym" },
   { id: "home", label: "🏠 Home" },
   { id: "schedule", label: "📅 Week" },
+  { id: "nutrition", label: "🥗 Nutrition" },
   { id: "tracker", label: "📈 Track" },
 ];
 
@@ -291,33 +408,29 @@ export default function App() {
 
   return (
     <div style={S.page}>
-      {/* Header */}
       <div style={S.header}>
         <div style={S.eyebrow}>Personal Fitness Plan</div>
         <h1 style={S.h1}>Train <span style={{ color: COLORS.lime }}>Hard.</span><br />Live Better.</h1>
         <p style={S.subtitle}>Fat loss · Stress relief · Strength · Feel good</p>
       </div>
 
-      {/* Nav */}
       <div style={S.nav}>
         {TABS.map(t => (
           <button key={t.id} style={S.navBtn(tab === t.id)} onClick={() => setTab(t.id)}>{t.label}</button>
         ))}
       </div>
 
-      {/* Supplements */}
       {tab === "supplements" && (
         <div style={S.section}>
           <div style={S.secTitle}>Your <span style={{ color: COLORS.lime }}>Stack</span></div>
           <p style={S.secDesc}>Curated for fat loss, work stress, and gym performance. No fluff.</p>
-
           {[1, 2].map(tier => (
             <div key={tier}>
               <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: COLORS.lime, margin: "20px 0 10px" }}>
                 {tier === 1 ? "🥇 Tier 1 — Non-Negotiable" : "🥈 Tier 2 — High Value"}
               </div>
               {SUPPS.filter(s => s.tier === tier).map((s, i) => (
-                <div key={i} style={{ ...S.card, borderLeft: `3px solid ${tier === 1 ? COLORS.lime : COLORS.blue}` }}>
+                <div key={i} style={{ ...S.card, borderLeft: "3px solid " + (tier === 1 ? COLORS.lime : COLORS.blue) }}>
                   <div style={{ padding: "14px 16px" }}>
                     <div style={{ fontWeight: 900, fontSize: 17, textTransform: "uppercase", marginBottom: 6 }}>{s.name}</div>
                     <span style={S.badge(tier === 1 ? COLORS.lime : COLORS.blue)}>{s.dose}</span>
@@ -328,18 +441,16 @@ export default function App() {
               ))}
             </div>
           ))}
-
           <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: COLORS.muted, margin: "20px 0 10px" }}>🥉 Tier 3 — Skip for Now</div>
-          <div style={{ ...S.card, opacity: 0.6, borderLeft: `3px solid ${COLORS.border}` }}>
+          <div style={{ ...S.card, opacity: 0.6, borderLeft: "3px solid " + COLORS.border }}>
             <div style={{ padding: "14px 16px" }}>
               <div style={{ fontWeight: 900, fontSize: 17, textTransform: "uppercase", marginBottom: 6 }}>Pre-Workout / BCAAs / Fat Burners</div>
               <p style={{ color: "#aaa", fontSize: 13 }}>Coffee covers pre-workout. BCAAs are redundant if you hit protein targets. Fat burners are pure marketing — skip entirely.</p>
             </div>
           </div>
-
           <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: COLORS.lime, margin: "24px 0 12px" }}>⏰ Daily Routine</div>
           {ROUTINE.map((r, i) => (
-            <div key={i} style={{ display: "flex", gap: 12, padding: "10px 0", borderBottom: `1px solid ${COLORS.border}`, fontSize: 13 }}>
+            <div key={i} style={{ display: "flex", gap: 12, padding: "10px 0", borderBottom: "1px solid " + COLORS.border, fontSize: 13 }}>
               <span style={{ color: COLORS.lime, fontWeight: 700, width: 80, flexShrink: 0 }}>{r.time}</span>
               <span style={{ color: "#ccc" }}>{r.action}</span>
             </div>
@@ -347,16 +458,14 @@ export default function App() {
         </div>
       )}
 
-      {/* Gym */}
       {tab === "gym" && (
         <div style={S.section}>
           <div style={S.secTitle}>Gym <span style={{ color: COLORS.lime }}>Program</span></div>
-          <p style={S.secDesc}>3x/week full body · ~50 min/session · Mon / Wed / Fri · Add 2.5kg when top reps feel easy 2 sessions in a row</p>
+          <p style={S.secDesc}>3x/week full body · ~50 min/session · Mon / Wed / Fri</p>
           {GYM.map((ex, i) => <ExerciseCard key={i} ex={ex} index={i} type="gym" />)}
         </div>
       )}
 
-      {/* Home */}
       {tab === "home" && (
         <div style={S.section}>
           <div style={{ ...S.panel, textAlign: "center", marginBottom: 16, borderColor: COLORS.lime }}>
@@ -372,7 +481,6 @@ export default function App() {
         </div>
       )}
 
-      {/* Schedule */}
       {tab === "schedule" && (
         <div style={S.section}>
           <div style={S.secTitle}>Weekly <span style={{ color: COLORS.lime }}>Plan</span></div>
@@ -382,7 +490,7 @@ export default function App() {
               const colors = { gym: COLORS.lime, home: COLORS.blue, walk: COLORS.orange, rest: COLORS.muted };
               const c = colors[d.type];
               return (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", background: COLORS.panel, border: `1px solid ${COLORS.border}`, borderLeft: `3px solid ${c}`, borderRadius: 8 }}>
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", background: COLORS.panel, border: "1px solid " + COLORS.border, borderLeft: "3px solid " + c, borderRadius: 8 }}>
                   <span style={{ fontWeight: 900, fontSize: 15, textTransform: "uppercase", width: 36, color: c }}>{d.day}</span>
                   <span style={{ flex: 1, fontSize: 14 }}>{d.label}</span>
                   <span style={{ fontSize: 20 }}>{d.icon}</span>
@@ -390,11 +498,10 @@ export default function App() {
               );
             })}
           </div>
-
           <div style={S.panel}>
             <div style={{ fontWeight: 900, fontSize: 18, textTransform: "uppercase", marginBottom: 12 }}>Fat Loss <span style={{ color: COLORS.lime }}>Rules</span></div>
             {[
-              ["Target", "0.5–1 kg/week weight loss — sustainable & muscle-preserving"],
+              ["Target", "0.5–1 kg/week weight loss — sustainable and muscle-preserving"],
               ["Protein", "1.6–2g per kg of bodyweight daily from food + powder"],
               ["Track", "Calories in MyFitnessPal or Cronometer for 2–3 weeks"],
               ["Sleep", "7–9 hours. Non-negotiable for fat loss and stress"],
@@ -409,7 +516,14 @@ export default function App() {
         </div>
       )}
 
-      {/* Tracker */}
+      {tab === "nutrition" && (
+        <div style={S.section}>
+          <div style={S.secTitle}>Nutrition <span style={{ color: COLORS.lime }}>Plan</span></div>
+          <p style={S.secDesc}>Personalised for ~85kg · fat loss · desk job · 3 meals/day</p>
+          <NutritionTab />
+        </div>
+      )}
+
       {tab === "tracker" && (
         <div style={S.section}>
           <div style={S.secTitle}>Progress <span style={{ color: COLORS.lime }}>Tracker</span></div>
